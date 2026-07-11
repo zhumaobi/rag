@@ -1,0 +1,7 @@
+{"query": "如何设置 Redis 语义缓存的 TTL？", "intent": "Intent-1", "ground_truth_doc_ids": ["REPLACE_doc_redis_cache_config"]}
+{"query": "BGE-M3 embedding 的向量维度是多少？", "intent": "Intent-1", "ground_truth_doc_ids": ["REPLACE_doc_bgem3_spec"]}
+{"query": "How do I configure the connection timeout for the Milvus client?", "intent": "Intent-1", "ground_truth_doc_ids": ["REPLACE_doc_milvus_client"]}
+{"query": "对比 Milvus 和 Elasticsearch 在向量检索上的性能差异", "intent": "Intent-2", "ground_truth_doc_ids": ["REPLACE_doc_milvus_perf", "REPLACE_doc_es_perf"]}
+{"query": "Qwen2.5-7B 和 14B 的区别是什么？", "intent": "Intent-2", "ground_truth_doc_ids": ["REPLACE_doc_qwen_7b", "REPLACE_doc_qwen_14b"]}
+{"query": "向量数据库和知识图谱之间的关系是什么？", "intent": "Intent-3", "ground_truth_doc_ids": ["REPLACE_doc_vectordb_concept", "REPLACE_doc_kg_concept"]}
+{"query": "什么是 RAG 中的 reranking？", "intent": "Intent-3", "ground_truth_doc_ids": ["REPLACE_doc_rerank_concept"]}

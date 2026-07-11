@@ -1,0 +1,41 @@
+# Python virtual environments
+.venv/
+**/.venv/
+venv/
+env/
+
+# Docker persistent volumes (Milvus/etcd/MinIO data)
+volumes/
+
+# Python caches
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Build / dist
+build/
+dist/
+*.egg-info/
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large downloaded model (re-download from hf-mirror per README; exceeds GitHub 100MB limit)
+src/rag/models/paraphrase-multilingual-MiniLM-L12-v2/
+
+# Local env / secrets
+.env
+*.local
+
+# Logs
+*.log

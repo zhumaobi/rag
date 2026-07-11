@@ -1,0 +1,35 @@
+{"query": "ProductA 的售后政策有哪些内容", "intent": "Intent-1", "ground_truth_doc_ids": ["doc-collA-0"]}
+{"query": "如何开通 ProductA 的企业版账户", "intent": "Intent-1", "ground_truth_doc_ids": ["doc-collA-0"]}
+{"query": "ProductA 支持的最大并发连接数是多少", "intent": "Intent-1", "ground_truth_doc_ids": ["doc-collA-0"]}
+{"query": "ProductA 的月度订阅价格是多少", "intent": "Intent-1", "ground_truth_doc_ids": ["doc-collA-0"]}
+{"query": "怎么重置 ProductA 的管理员密码", "intent": "Intent-1", "ground_truth_doc_ids": ["doc-collA-0"]}
+{"query": "ProductA 的数据备份频率如何设置", "intent": "Intent-1", "ground_truth_doc_ids": ["doc-collA-0"]}
+{"query": "ProductA 免费试用期有多长", "intent": "Intent-1", "ground_truth_doc_ids": ["doc-collA-0"]}
+{"query": "ProductA 的API调用限额是多少", "intent": "Intent-1", "ground_truth_doc_ids": ["doc-collA-0"]}
+{"query": "如何在 ProductA 中导出报表", "intent": "Intent-1", "ground_truth_doc_ids": ["doc-collA-0"]}
+{"query": "ProductA 的默认存储容量是多少GB", "intent": "Intent-1", "ground_truth_doc_ids": ["doc-collA-0"]}
+{"query": "ProductA 的客服热线电话号码", "intent": "Intent-1", "ground_truth_doc_ids": ["doc-collA-0"]}
+{"query": "怎么升级 ProductA 到最新版本", "intent": "Intent-1", "ground_truth_doc_ids": ["doc-collA-0"]}
+{"query": "ProductA 的发票开具流程是怎样的", "intent": "Intent-1", "ground_truth_doc_ids": ["doc-collA-0"]}
+{"query": "怎么对比A产品和B产品的售后政策", "intent": "Intent-2", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
+{"query": "ProductA 和 ProductB 的价格比较", "intent": "Intent-2", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
+{"query": "ProductA 与 ProductB 有什么区别", "intent": "Intent-2", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
+{"query": "ProductA 和 ProductB 的性能差异在哪", "intent": "Intent-2", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
+{"query": "ProductA vs ProductB 哪个更适合中小企业", "intent": "Intent-2", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
+{"query": "对比一下 ProductA 和 ProductB 的存储方案", "intent": "Intent-2", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
+{"query": "ProductA 和 ProductB 哪个更好用", "intent": "Intent-2", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
+{"query": "比较 ProductA 和 ProductB 的API能力", "intent": "Intent-2", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
+{"query": "ProductA 与 ProductB 相比优势明显吗", "intent": "Intent-2", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
+{"query": "ProductA 和 ProductB 的部署方式对比", "intent": "Intent-2", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
+{"query": "ProductA 跟 ProductB 的区别有哪些", "intent": "Intent-2", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
+{"query": "对比 ProductA 和 ProductB 的扩展性", "intent": "Intent-2", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
+{"query": "ProductA 和 ProductB 之间是什么关系", "intent": "Intent-3", "ground_truth_doc_ids": ["doc-global-0"]}
+{"query": "什么是 ProductA 的核心概念", "intent": "Intent-3", "ground_truth_doc_ids": ["doc-global-0"]}
+{"query": "ProductA 与数据仓库的关联是怎样的", "intent": "Intent-3", "ground_truth_doc_ids": ["doc-global-0"]}
+{"query": "ProductA 依赖哪些底层服务", "intent": "Intent-3", "ground_truth_doc_ids": ["doc-global-0"]}
+{"query": "ProductA 属于哪一类产品", "intent": "Intent-3", "ground_truth_doc_ids": ["doc-global-0"]}
+{"query": "ProductA 能否替代传统数据库", "intent": "Intent-3", "ground_truth_doc_ids": ["doc-global-0"]}
+{"query": "ProductA 和消息队列之间的联系", "intent": "Intent-3", "ground_truth_doc_ids": ["doc-global-0"]}
+{"query": "ProductA 与微服务的概念关联", "intent": "Intent-3", "ground_truth_doc_ids": ["doc-global-0"]}
+{"query": "云计算的基本概念是什么", "intent": "Intent-3", "ground_truth_doc_ids": ["doc-global-0"]}
+{"query": "ProductA 和缓存系统之间有联系吗", "intent": "Intent-3", "ground_truth_doc_ids": ["doc-global-0"]}

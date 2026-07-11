@@ -1,0 +1,11 @@
+{"query": "How do I configure the connection timeout for the Milvus client?", "label": "Intent-1"}
+{"query": "BGE-M3 embedding 的向量维度是多少？", "label": "Intent-1"}
+{"query": "如何设置 Redis 语义缓存的 TTL？", "label": "Intent-1"}
+{"query": "Qwen2.5-7B supports how many tokens of context length?", "label": "Intent-1"}
+{"query": "对比 Milvus 和 Elasticsearch 在向量检索上的性能差异", "label": "Intent-2"}
+{"query": "BGE-M3 vs OpenAI text-embedding-3，哪个更适合中文检索？", "label": "Intent-2"}
+{"query": "Qwen2.5-7B 和 14B 的区别是什么？", "label": "Intent-2"}
+{"query": "什么是 RAG 中的 reranking？", "label": "Intent-3"}
+{"query": "向量数据库和知识图谱之间的关系是什么？", "label": "Intent-3"}
+{"query": "RAG pipeline 里 embedding 和 chunking 的依赖关系", "label": "Intent-3"}
+{"query": "ProductA 能否替代传统关系型数据库？", "label": "Intent-3"}
