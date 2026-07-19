@@ -10,9 +10,12 @@ Given a user question scoped to a tenant, it:
 3. Checks a **two-level semantic cache** (in-memory L1 → Redis VSS L2).
 4. Runs **intent-routed hybrid retrieval** (dense + sparse + knowledge graph).
 5. Generates an answer via a **tiered vLLM cluster** (7B / 14B pools) with a multi-level degradation chain.
-6. Stores the answer back into the cache (fire-and-forget).
+6. *(Opt-in)* **Agentic self-correction loop** — for whitelisted `(tenant, intent)` pairs: scores the answer with RAGAs (Faithfulness ≥ 0.90, Answer Relevance ≥ 0.85); on failure, HyDE-rewrites the query and re-retrieves/regenerates within a relaxed deadline; always returns the best-so-far candidate.
+7. Stores the answer back into the cache (fire-and-forget).
 
 Offline, a **state-machine-driven pipeline** ingests documents from object storage, detects changes, chunks/embeds, builds three indices (vector, BM25, knowledge graph) on shadow collections, validates, then performs an **atomic switch**.
+
+Offline evaluation is split into **CI / Nightly tiers**: CI (<2min, no LLM) covers key-point coverage (embedding mode) + answer similarity; Nightly adds Context Precision@K (LLM judge), NLI key-points, rerank training label export, and Agentic loop efficiency analysis.
 
 ## Wiki pages
 
@@ -25,9 +28,9 @@ Offline, a **state-machine-driven pipeline** ingests documents from object stora
 | [LLM Serving](./Module-Serving.md) | `serving/` — dispatcher, model pools, degradation, prefix cache |
 | [Semantic Cache](./Module-Cache.md) | `cache/` — L1/L2 cache, similarity, invalidation |
 | [Offline Index Pipeline](./Module-Pipeline.md) | `pipeline/` — ingest → chunk → embed → index → switch |
-| [Query Facade](./Module-Query.md) | `query/` — orchestration, wiring, CLI, fakes |
+| [Query Facade](./Module-Query.md) | `query/` — orchestration, Agentic self-correction loop, wiring, CLI, fakes |
 | [Infrastructure Clients](./Module-Clients.md) | `clients/` — Milvus, ES, Neo4j, Redis, Postgres, S3 |
-| [Evaluation](./Module-Evaluation.md) | `evaluation/` — 4-level eval, release gate |
+| [Evaluation](./Module-Evaluation.md) | `evaluation/` — 4-level eval, release gate, CI/Nightly tiers, key-point coverage, CP@K, Agentic efficiency |
 | [Observability](./Module-Observability.md) | `observability/` — metrics, tracing, alerts |
 | [Deployment & Rollout](./Module-Deploy.md) | `deploy/` — canary rollout controller |
 | [Domain Model & Config](./Reference-Core.md) | `models.py`, `config.py`, `naming.py`, `raglog.py` |

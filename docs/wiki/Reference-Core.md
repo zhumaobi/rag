@@ -31,7 +31,7 @@ Enums and dataclasses passed across the pipeline and query layers.
 `Settings(BaseSettings)` (pydantic-settings) with env prefix `RAG_` and `.env` support. Access the singleton via `get_settings()` (`@lru_cache`).
 
 | Group | Keys (defaults) |
-|-------|-----------------|
+|-------|-----------------|  
 | Milvus | `milvus_host=localhost`, `milvus_port=19530` |
 | Elasticsearch | `es_hosts=http://localhost:9200` |
 | Neo4j | `neo4j_uri=bolt://localhost:7687`, `neo4j_user=neo4j`, `neo4j_password=neo4j` |
@@ -41,9 +41,12 @@ Enums and dataclasses passed across the pipeline and query layers.
 | Embedding | `embedding_model=BAAI/bge-m3`, `embedding_dim=1024`, `embedding_batch_size=64` |
 | Chunking | `chunk_tokens=512`, `chunk_overlap_tokens=50` |
 | LLM | `llm_base_url=http://localhost:8000/v1`, `llm_model=Qwen2.5-14B-Instruct`, `llm_api_key=EMPTY` |
+| vLLM pools | `vllm_small_endpoints=https://api.openai.com`, `vllm_large_endpoints=https://api.openai.com` (comma-separated) |
+| Tracing | `otlp_endpoint=""` (blank = no-op) |
 | Knowledge graph | `kg_confidence_threshold=0.85` |
 | Tenancy | `small_tenant_doc_threshold=1000` |
 | Shadow | `shadow_retention_hours=24` |
+| Agentic RAG | `agentic_enabled_tenants=""`, `agentic_enabled_intents=""`, `agentic_deadline_s=20.0`, `agentic_max_iters=2` |
 
 Override any value with an env var, e.g. `RAG_MILVUS_HOST=milvus.internal`.
 

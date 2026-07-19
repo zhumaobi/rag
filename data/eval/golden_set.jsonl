@@ -1,30 +1,30 @@
-{"query": "ProductA 的售后政策有哪些内容", "intent": "Intent-1", "reference_answer": "ProductA 提供 7x24 小时技术支持、一年质保以及免费的版本升级服务。", "ground_truth_doc_ids": ["doc-collA-0"]}
-{"query": "如何开通 ProductA 的企业版账户", "intent": "Intent-1", "reference_answer": "在控制台选择企业版套餐，完成企业实名认证并付款后即可开通。", "ground_truth_doc_ids": ["doc-collA-0"]}
-{"query": "ProductA 支持的最大并发连接数是多少", "intent": "Intent-1", "reference_answer": "ProductA 企业版默认支持最多 10000 个并发连接，可按需扩容。", "ground_truth_doc_ids": ["doc-collA-1"]}
-{"query": "ProductA 的月度订阅价格是多少", "intent": "Intent-1", "reference_answer": "ProductA 标准版月度订阅价格为每月 299 元，企业版按坐席计费。", "ground_truth_doc_ids": ["doc-collA-0"]}
-{"query": "ProductA 免费试用期有多长", "intent": "Intent-1", "reference_answer": "ProductA 提供 30 天免费试用，试用期内功能与正式版一致。", "ground_truth_doc_ids": ["doc-collA-2"]}
-{"query": "ProductA 的API调用限额是多少", "intent": "Intent-1", "reference_answer": "标准版每分钟 600 次 API 调用，企业版可提升至每分钟 6000 次。", "ground_truth_doc_ids": ["doc-collA-0"]}
-{"query": "如何在 ProductA 中导出报表", "intent": "Intent-1", "reference_answer": "在报表页面点击导出，选择 CSV 或 Excel 格式即可下载。", "ground_truth_doc_ids": ["doc-collA-1"]}
-{"query": "ProductA 的默认存储容量是多少GB", "intent": "Intent-1", "reference_answer": "ProductA 标准版默认提供 100GB 存储空间。", "ground_truth_doc_ids": ["doc-collA-0"]}
-{"query": "ProductA 的发票开具流程是怎样的", "intent": "Intent-1", "reference_answer": "在账单页面提交开票申请，填写抬头与税号后 3 个工作日内开具电子发票。", "ground_truth_doc_ids": ["doc-collA-1"]}
-{"query": "ProductA 支持哪些支付方式", "intent": "Intent-1", "reference_answer": "ProductA 支持支付宝、微信支付、对公转账与信用卡付款。", "ground_truth_doc_ids": ["doc-collA-0"]}
-{"query": "怎么对比A产品和B产品的售后政策", "intent": "Intent-2", "reference_answer": "ProductA 提供 7x24 支持与一年质保；ProductB 提供工作日支持与两年质保，可按需选择。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
-{"query": "ProductA 和 ProductB 的价格比较", "intent": "Intent-2", "reference_answer": "ProductA 月费 299 元偏重功能全面；ProductB 月费 199 元偏重性价比。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
-{"query": "ProductA 与 ProductB 有什么区别", "intent": "Intent-2", "reference_answer": "ProductA 侧重企业级扩展性，ProductB 侧重易用性与快速上手。", "ground_truth_doc_ids": ["doc-collA-1", "doc-collB-0"]}
-{"query": "ProductA 和 ProductB 的性能差异在哪", "intent": "Intent-2", "reference_answer": "ProductA 并发能力更高，ProductB 单机延迟更低，取决于负载模式。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-1"]}
-{"query": "ProductA vs ProductB 哪个更适合中小企业", "intent": "Intent-2", "reference_answer": "中小企业通常更适合 ProductB，因其价格更低且部署更简单。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
-{"query": "对比一下 ProductA 和 ProductB 的存储方案", "intent": "Intent-2", "reference_answer": "ProductA 默认 100GB 可弹性扩容；ProductB 默认 50GB 按阶梯计费。", "ground_truth_doc_ids": ["doc-collA-2", "doc-collB-0"]}
-{"query": "比较 ProductA 和 ProductB 的API能力", "intent": "Intent-2", "reference_answer": "ProductA 提供更高的调用限额与更丰富的接口，ProductB 接口精简易集成。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
-{"query": "ProductA 和 ProductB 的部署方式对比", "intent": "Intent-2", "reference_answer": "ProductA 支持私有化与混合云部署；ProductB 仅支持公有云 SaaS。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
-{"query": "ProductA 跟 ProductB 的区别有哪些", "intent": "Intent-2", "reference_answer": "两者在价格、部署方式、扩展性与支持时长上均有差异。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"]}
-{"query": "对比 ProductA 和 ProductB 的扩展性", "intent": "Intent-2", "reference_answer": "ProductA 支持横向扩容至数千节点；ProductB 扩展上限较低但足够中小规模。", "ground_truth_doc_ids": ["doc-collA-2", "doc-collB-1"]}
-{"query": "ProductA 和 ProductB 之间是什么关系", "intent": "Intent-3", "reference_answer": "ProductA 与 ProductB 属于同一产品线，可通过统一网关集成协作。", "ground_truth_doc_ids": ["doc-global-0"]}
-{"query": "什么是 ProductA 的核心概念", "intent": "Intent-3", "reference_answer": "ProductA 的核心概念是以租户隔离为基础的多租户数据服务。", "ground_truth_doc_ids": ["doc-global-0"]}
-{"query": "ProductA 与数据仓库的关联是怎样的", "intent": "Intent-3", "reference_answer": "ProductA 可作为数据源接入数据仓库，通过 ETL 管道同步数据。", "ground_truth_doc_ids": ["doc-global-1"]}
-{"query": "ProductA 依赖哪些底层服务", "intent": "Intent-3", "reference_answer": "ProductA 依赖对象存储、消息队列与缓存服务作为底层组件。", "ground_truth_doc_ids": ["doc-global-0"]}
-{"query": "ProductA 能否替代传统数据库", "intent": "Intent-3", "reference_answer": "ProductA 在部分场景可替代传统数据库，但强事务场景仍建议配合关系型数据库。", "ground_truth_doc_ids": ["doc-global-0"]}
-{"query": "ProductA 和消息队列之间的联系", "intent": "Intent-3", "reference_answer": "ProductA 通过消息队列实现异步事件分发与解耦。", "ground_truth_doc_ids": ["doc-global-1"]}
-{"query": "ProductA 与微服务的概念关联", "intent": "Intent-3", "reference_answer": "ProductA 可作为微服务架构中的数据服务组件独立部署与伸缩。", "ground_truth_doc_ids": ["doc-global-0"]}
-{"query": "云计算的基本概念是什么", "intent": "Intent-3", "reference_answer": "云计算是按需通过网络提供可弹性伸缩的计算、存储与网络资源的模式。", "ground_truth_doc_ids": ["doc-global-2"]}
-{"query": "ProductA 和缓存系统之间有联系吗", "intent": "Intent-3", "reference_answer": "有，ProductA 使用缓存系统加速热点数据读取以降低延迟。", "ground_truth_doc_ids": ["doc-global-0"]}
-{"query": "ProductA 属于 SaaS 还是 PaaS", "intent": "Intent-3", "reference_answer": "ProductA 同时提供 SaaS 版本与 PaaS 能力，可按交付模式选择。", "ground_truth_doc_ids": ["doc-global-2"]}
+{"query": "ProductA 的售后政策有哪些内容", "intent": "Intent-1", "reference_answer": "ProductA 提供 7x24 小时技术支持、一年质保以及免费的版本升级服务。", "ground_truth_doc_ids": ["doc-collA-0"], "key_points": ["7x24小时技术支持", "一年质保", "免费版本升级服务"]}
+{"query": "如何开通 ProductA 的企业版账户", "intent": "Intent-1", "reference_answer": "在控制台选择企业版套餐，完成企业实名认证并付款后即可开通。", "ground_truth_doc_ids": ["doc-collA-0"], "key_points": ["在控制台选择企业版套餐", "完成企业实名认证", "付款后即可开通"]}
+{"query": "ProductA 支持的最大并发连接数是多少", "intent": "Intent-1", "reference_answer": "ProductA 企业版默认支持最多 10000 个并发连接，可按需扩容。", "ground_truth_doc_ids": ["doc-collA-1"], "key_points": ["企业版默认最多10000个并发连接", "可按需扩容"]}
+{"query": "ProductA 的月度订阅价格是多少", "intent": "Intent-1", "reference_answer": "ProductA 标准版月度订阅价格为每月 299 元，企业版按坐席计费。", "ground_truth_doc_ids": ["doc-collA-0"], "key_points": ["标准版每月299元", "企业版按坐席计费"]}
+{"query": "ProductA 免费试用期有多长", "intent": "Intent-1", "reference_answer": "ProductA 提供 30 天免费试用，试用期内功能与正式版一致。", "ground_truth_doc_ids": ["doc-collA-2"], "key_points": ["30天免费试用", "试用期内功能与正式版一致"]}
+{"query": "ProductA 的API调用限额是多少", "intent": "Intent-1", "reference_answer": "标准版每分钟 600 次 API 调用，企业版可提升至每分钟 6000 次。", "ground_truth_doc_ids": ["doc-collA-0"], "key_points": ["标准版每分钟600次API调用", "企业版可提升至每分钟6000次"]}
+{"query": "如何在 ProductA 中导出报表", "intent": "Intent-1", "reference_answer": "在报表页面点击导出，选择 CSV 或 Excel 格式即可下载。", "ground_truth_doc_ids": ["doc-collA-1"], "key_points": ["在报表页面点击导出", "支持CSV或Excel格式"]}
+{"query": "ProductA 的默认存储容量是多少GB", "intent": "Intent-1", "reference_answer": "ProductA 标准版默认提供 100GB 存储空间。", "ground_truth_doc_ids": ["doc-collA-0"], "key_points": ["标准版默认100GB存储空间"]}
+{"query": "ProductA 的发票开具流程是怎样的", "intent": "Intent-1", "reference_answer": "在账单页面提交开票申请，填写抬头与税号后 3 个工作日内开具电子发票。", "ground_truth_doc_ids": ["doc-collA-1"], "key_points": ["在账单页面提交开票申请", "填写抬头与税号", "3个工作日内开具电子发票"]}
+{"query": "ProductA 支持哪些支付方式", "intent": "Intent-1", "reference_answer": "ProductA 支持支付宝、微信支付、对公转账与信用卡付款。", "ground_truth_doc_ids": ["doc-collA-0"], "key_points": ["支持支付宝", "支持微信支付", "支持对公转账与信用卡付款"]}
+{"query": "怎么对比A产品和B产品的售后政策", "intent": "Intent-2", "reference_answer": "ProductA 提供 7x24 支持与一年质保；ProductB 提供工作日支持与两年质保，可按需选择。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"], "key_points": ["ProductA提供7x24支持", "ProductA一年质保", "ProductB提供工作日支持", "ProductB两年质保"]}
+{"query": "ProductA 和 ProductB 的价格比较", "intent": "Intent-2", "reference_answer": "ProductA 月费 299 元偏重功能全面；ProductB 月费 199 元偏重性价比。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"], "key_points": ["ProductA月费299元", "ProductA偏重功能全面", "ProductB月费199元", "ProductB偏重性价比"]}
+{"query": "ProductA 与 ProductB 有什么区别", "intent": "Intent-2", "reference_answer": "ProductA 侧重企业级扩展性，ProductB 侧重易用性与快速上手。", "ground_truth_doc_ids": ["doc-collA-1", "doc-collB-0"], "key_points": ["ProductA侧重企业级扩展性", "ProductB侧重易用性与快速上手"]}
+{"query": "ProductA 和 ProductB 的性能差异在哪", "intent": "Intent-2", "reference_answer": "ProductA 并发能力更高，ProductB 单机延迟更低，取决于负载模式。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-1"], "key_points": ["ProductA并发能力更高", "ProductB单机延迟更低", "取决于负载模式"]}
+{"query": "ProductA vs ProductB 哪个更适合中小企业", "intent": "Intent-2", "reference_answer": "中小企业通常更适合 ProductB，因其价格更低且部署更简单。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"], "key_points": ["中小企业通常更适合ProductB", "ProductB价格更低", "ProductB部署更简单"]}
+{"query": "对比一下 ProductA 和 ProductB 的存储方案", "intent": "Intent-2", "reference_answer": "ProductA 默认 100GB 可弹性扩容；ProductB 默认 50GB 按阶梯计费。", "ground_truth_doc_ids": ["doc-collA-2", "doc-collB-0"], "key_points": ["ProductA默认100GB", "ProductA可弹性扩容", "ProductB默认50GB", "ProductB按阶梯计费"]}
+{"query": "比较 ProductA 和 ProductB 的API能力", "intent": "Intent-2", "reference_answer": "ProductA 提供更高的调用限额与更丰富的接口，ProductB 接口精简易集成。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"], "key_points": ["ProductA调用限额更高", "ProductA接口更丰富", "ProductB接口精简易集成"]}
+{"query": "ProductA 和 ProductB 的部署方式对比", "intent": "Intent-2", "reference_answer": "ProductA 支持私有化与混合云部署；ProductB 仅支持公有云 SaaS。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"], "key_points": ["ProductA支持私有化部署", "ProductA支持混合云部署", "ProductB仅支持公有云SaaS"]}
+{"query": "ProductA 跟 ProductB 的区别有哪些", "intent": "Intent-2", "reference_answer": "两者在价格、部署方式、扩展性与支持时长上均有差异。", "ground_truth_doc_ids": ["doc-collA-0", "doc-collB-0"], "key_points": ["价格有差异", "部署方式有差异", "扩展性有差异", "支持时长有差异"]}
+{"query": "对比 ProductA 和 ProductB 的扩展性", "intent": "Intent-2", "reference_answer": "ProductA 支持横向扩容至数千节点；ProductB 扩展上限较低但足够中小规模。", "ground_truth_doc_ids": ["doc-collA-2", "doc-collB-1"], "key_points": ["ProductA支持横向扩容至数千节点", "ProductB扩展上限较低", "ProductB足够中小规模"]}
+{"query": "ProductA 和 ProductB 之间是什么关系", "intent": "Intent-3", "reference_answer": "ProductA 与 ProductB 属于同一产品线，可通过统一网关集成协作。", "ground_truth_doc_ids": ["doc-global-0"], "key_points": ["属于同一产品线", "可通过统一网关集成协作"]}
+{"query": "什么是 ProductA 的核心概念", "intent": "Intent-3", "reference_answer": "ProductA 的核心概念是以租户隔离为基础的多租户数据服务。", "ground_truth_doc_ids": ["doc-global-0"], "key_points": ["以租户隔离为基础", "多租户数据服务"]}
+{"query": "ProductA 与数据仓库的关联是怎样的", "intent": "Intent-3", "reference_answer": "ProductA 可作为数据源接入数据仓库，通过 ETL 管道同步数据。", "ground_truth_doc_ids": ["doc-global-1"], "key_points": ["ProductA可作为数据源接入数据仓库", "通过ETL管道同步数据"]}
+{"query": "ProductA 依赖哪些底层服务", "intent": "Intent-3", "reference_answer": "ProductA 依赖对象存储、消息队列与缓存服务作为底层组件。", "ground_truth_doc_ids": ["doc-global-0"], "key_points": ["依赖对象存储", "依赖消息队列", "依赖缓存服务"]}
+{"query": "ProductA 能否替代传统数据库", "intent": "Intent-3", "reference_answer": "ProductA 在部分场景可替代传统数据库，但强事务场景仍建议配合关系型数据库。", "ground_truth_doc_ids": ["doc-global-0"], "key_points": ["部分场景可替代传统数据库", "强事务场景仍建议配合关系型数据库"]}
+{"query": "ProductA 和消息队列之间的联系", "intent": "Intent-3", "reference_answer": "ProductA 通过消息队列实现异步事件分发与解耦。", "ground_truth_doc_ids": ["doc-global-1"], "key_points": ["通过消息队列实现异步事件分发", "实现解耦"]}
+{"query": "ProductA 与微服务的概念关联", "intent": "Intent-3", "reference_answer": "ProductA 可作为微服务架构中的数据服务组件独立部署与伸缩。", "ground_truth_doc_ids": ["doc-global-0"], "key_points": ["可作为微服务架构中的数据服务组件", "支持独立部署与伸缩"]}
+{"query": "云计算的基本概念是什么", "intent": "Intent-3", "reference_answer": "云计算是按需通过网络提供可弹性伸缩的计算、存储与网络资源的模式。", "ground_truth_doc_ids": ["doc-global-2"], "key_points": ["按需通过网络提供", "可弹性伸缩的计算、存储与网络资源"]}
+{"query": "ProductA 和缓存系统之间有联系吗", "intent": "Intent-3", "reference_answer": "有，ProductA 使用缓存系统加速热点数据读取以降低延迟。", "ground_truth_doc_ids": ["doc-global-0"], "key_points": ["ProductA使用缓存系统", "加速热点数据读取", "降低延迟"]}
+{"query": "ProductA 属于 SaaS 还是 PaaS", "intent": "Intent-3", "reference_answer": "ProductA 同时提供 SaaS 版本与 PaaS 能力，可按交付模式选择。", "ground_truth_doc_ids": ["doc-global-2"], "key_points": ["同时提供SaaS版本", "提供PaaS能力", "可按交付模式选择"]}

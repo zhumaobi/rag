@@ -29,6 +29,20 @@ python -m query "订单中心和支付网关有什么区别?" --tenant t1
 
 Output includes the answer plus a diagnostics footer: `intent`, `source`, `tier`, degradation flags, `request_id`, per-hop latencies, and retrieved `doc_ids`. See [Query Facade](./Module-Query.md).
 
+## Agentic self-correction loop (opt-in)
+
+Enable for specific `(tenant, intent)` pairs via environment variables:
+
+```bash
+export RAG_AGENTIC_ENABLED_TENANTS=t1
+export RAG_AGENTIC_ENABLED_INTENTS=Intent-1
+export RAG_AGENTIC_DEADLINE_S=20
+export RAG_AGENTIC_MAX_ITERS=2
+python -m query "订单中心如何配置限流策略" --tenant t1 --verbose
+```
+
+When enabled, the output additionally shows `meta.agentic`, `meta.low_confidence`, `meta.iterations`, and per-iteration scores in `trace.agentic_scores`.
+
 ## Intent tooling
 
 ```bash
@@ -56,9 +70,26 @@ pytest tests/
 | `tests/test_fault_injection.py` | LLM failure → L3/L4 degradation, timeout → return-chunks |
 | `tests/test_perf_smoke.py` | 1000 QPS burst, asserts P99 < 3s |
 | `tests/test_rollout.py` | Canary ramp + rollback + deterministic split |
+| `tests/test_agentic_rag.py` | Agentic loop: pass/retry/best-so-far/fallback |
+| `tests/test_eval_enhancements.py` | Key-point coverage, CP@K, Agentic efficiency |
 | `tests/conftest.py` | Shared fakes: `FakeEmbedder`, `FakeIntentService`, `FakeCorpus` |
 
 > **Import-path note:** application source uses **flat** imports (`from intent.types import ...`, needs `src/rag` on `PYTHONPATH`), while the test suite uses **package** imports (`from rag.intent.types import ...`, needs `src` on `PYTHONPATH`). Set `PYTHONPATH` to match what you're running.
+
+## Run offline evaluation
+
+```bash
+cd src/rag && export PYTHONPATH=$PWD
+
+# CI tier — fast (<2min), no LLM calls; includes key-point coverage + answer similarity
+python -m evaluation.run_offline --data-dir data/eval --tier ci
+
+# Nightly tier — adds Context Precision@K, NLI key-points, Agentic efficiency
+python -m evaluation.run_offline --data-dir data/eval --tier nightly
+
+# Evaluation pipeline (daily / release gate)
+python -m evaluation.pipeline --mode daily --data-dir data/eval
+```
 
 ## Bring up real backends
 

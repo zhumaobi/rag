@@ -42,6 +42,40 @@ Each hop is wrapped in a tracer span and timed into `QueryTrace.hop_latency_ms` 
 
 **Key property:** `QueryService` constructs none of its collaborators — everything is injected (`query/service.py:27`). The identical code path runs against fakes (`build_mock`) and real clients (`build_production`).
 
+### Agentic self-correction loop (opt-in)
+
+For `(tenant, intent)` pairs on the Agentic whitelist (`query/agentic.py`), the query path delegates steps [4]–[5] to `AgenticController` instead of the single-pass flow:
+
+```
+Cache MISS + (tenant, intent) on whitelist?
+   │ no  → default single-pass [4][5][6] (zero overhead)
+   │ yes → independent relaxed deadline (RAG_AGENTIC_DEADLINE_S, default 20s)
+   ▼
+┌────────────── loop (max RAG_AGENTIC_MAX_ITERS, default 2) ──────────────┐
+│  AgenticRetriever.retrieve() → Dispatcher.generate() → RagasEvaluator   │
+│       │                                                    │            │
+│       │                          Faithfulness ≥ 0.90 AND   │            │
+│       │                          Answer Relevance ≥ 0.85?  │            │
+│       │                               yes → return immediately          │
+│       │                               no + budget remains:              │
+│       │                                  HyDERewriter.rewrite()         │
+│       │                                    → embed hypothetical passage │
+│       │                                    → override dense arm         │
+│       │                                    (sparse arm keeps original)  │
+│       │                                    → re-retrieve ──────────────┤
+│       ▼                                                                 │
+│  Track best-so-far by rank = faithfulness + answer_relevance            │
+└─────────────────────────────────────────────────────────────────────────┘
+   ▼
+Return highest-rank candidate; flag meta.low_confidence if none passed gate
+```
+
+Key design constraints:
+- **Isolation:** `AgenticRetriever` calls dense/sparse retrievers directly — it does NOT touch the shared `RetrievalRouter` (protects SLA-critical path).
+- **Resource pools:** RAGAs scoring and HyDE generation use the **7B/SMALL** pool; answer generation uses the intent-appropriate pool.
+- **Graceful fallback:** If RAGAs is unavailable or any loop exception occurs, falls back to the single-pass path.
+- **Observability:** `QueryTrace.agentic_scores` records per-iteration `faithfulness`, `answer_relevance`, `rewritten`, `passed`; `Answer.meta` carries `agentic: true`, `low_confidence`, `iterations`.
+
 ## Offline index pipeline
 
 Entry point: `IndexPipeline.run()` — `pipeline/orchestrator.py:76`.
@@ -103,6 +137,9 @@ Isolation is enforced at every layer (see `naming.py`):
 | D5 | Semantic cache at cosine > 0.92 | High-precision reuse without stale answers |
 | D6 | Shadow/Active dual-collection atomic switch via aliases | Zero-downtime, instantly reversible index updates |
 | D7 | Prefix KV cache + consistent-hash tenant affinity | Maximize vLLM prefix cache hit rate (target ≥ 80%) |
+| D8 | Agentic loop scoped to (tenant, intent) whitelist | Opt-in per group; non-whitelist traffic has zero overhead |
+| D9 | HyDE overrides dense arm only; sparse arm keeps original query | Avoid BM25 matching on hallucinated hypothetical text |
+| D10 | CI/Nightly two-tier offline evaluation | CI < 2min (no LLM); Nightly adds LLM-judge metrics (CP@K, NLI, Agentic efficiency) |
 
 Design details live in `openspec/changes/archive/2026-07-09-enterprise-rag-system/design.md`, with 11 capability specs under `openspec/specs/`.
 
@@ -111,12 +148,13 @@ Design details live in `openspec/changes/archive/2026-07-09-enterprise-rag-syste
 | Concern | Package | Key entry |
 |---------|---------|-----------|
 | Query orchestration | `query/` | `QueryService`, `wiring.build_mock()` |
+| Agentic loop | `query/agentic.py` | `AgenticController.run()` |
 | Intent | `intent/` | `IntentService.recognize()` |
 | Retrieval | `retrieval/` | `RetrievalRouter.route()` |
 | Serving | `serving/` | `Dispatcher.generate()` |
 | Cache | `cache/` | `SemanticCache.lookup()/store_async()` |
 | Offline pipeline | `pipeline/` | `IndexPipeline.run()` |
 | Infra clients | `clients/` | Milvus/ES/Neo4j/Redis/Postgres/S3 |
-| Evaluation | `evaluation/` | 4-level eval + release gate |
+| Evaluation | `evaluation/` | 4-level eval + release gate + CI/Nightly tiers |
 | Observability | `observability/` | metrics / tracing / alerts |
 | Rollout | `deploy/` | `RolloutController` |

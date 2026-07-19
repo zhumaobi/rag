@@ -30,11 +30,13 @@ class Harness:
     retrieve: callable                # (query, intent) -> ranked doc_ids
     generate: callable | None = None  # (query, intent) -> (answer, contexts)
     ragas_scorer: callable | None = None  # (query, answer, contexts) -> dict
+    embedder: object | None = None    # sentence embedder for answer_similarity
 
 
-def run_daily(harness: Harness, data_dir: str, report_dir: str, ts: float) -> dict:
+def run_daily(harness: Harness, data_dir: str, report_dir: str, ts: float, tier: str = "ci") -> dict:
     """Task 8.7: run L1 (intent) + L2 (retrieval) + L3 (generation) on the eval sets and
-    write a timestamped report. `ts` is passed in (no wall-clock read) for determinism."""
+    write a timestamped report. `ts` is passed in (no wall-clock read) for determinism.
+    `tier` controls which metrics are computed: "ci" (fast) or "nightly" (full)."""
     reports: list[EvalReport] = []
 
     intent_samples = load_intent_samples(f"{data_dir}/intent_eval.jsonl")
@@ -60,10 +62,19 @@ def run_daily(harness: Harness, data_dir: str, report_dir: str, ts: float) -> di
 def _run_generation_eval(golden, harness: Harness) -> EvalReport:
     evaluator = RagasEvaluator()
     scores = []
+    similarities: list[float] = []
     for s in golden:
         answer, contexts = harness.generate(s.query, s.intent)
-        scores.append(evaluator.score_one(s.query, answer, contexts, scorer=harness.ragas_scorer))
+        scores.append(
+            evaluator.score_one(s.query, answer, contexts, scorer=harness.ragas_scorer, reference_answer=s.reference_answer)
+        )
+        # Answer similarity: cosine between answer and reference embeddings.
+        if s.reference_answer and hasattr(harness, "embedder") and harness.embedder is not None:
+            sim = _answer_similarity(harness.embedder, answer, s.reference_answer)
+            similarities.append(sim)
     agg = evaluator.aggregate(scores)
+    if similarities:
+        agg["answer_similarity"] = sum(similarities) / len(similarities)
     report = EvalReport(name="generation", metrics=agg)
     from evaluation.ragas_eval import (
         ANSWER_RELEVANCE_MIN,
@@ -95,6 +106,16 @@ def run_release_gate(harness: Harness, data_dir: str, baseline_path: str, e2e_ac
     baseline = load_baseline(baseline_path)
     result = evaluate_gate(reports, baseline, e2e_accuracy)
     return result
+
+
+def _answer_similarity(embedder, answer: str, reference: str) -> float:
+    """Cosine similarity between answer and reference embeddings."""
+    vecs = embedder.embed_texts([answer, reference])
+    a, b = vecs[0], vecs[1]
+    dot = sum(x * y for x, y in zip(a, b))
+    na = sum(x * x for x in a) ** 0.5
+    nb = sum(x * x for x in b) ** 0.5
+    return dot / (na * nb) if na and nb else 0.0
 
 
 def main() -> None:

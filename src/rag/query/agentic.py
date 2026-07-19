@@ -55,6 +55,7 @@ class IterationRecord:
     faithfulness: float
     answer_relevance: float
     passed: bool
+    latency_ms: float = 0.0
 
 
 @dataclass
@@ -200,6 +201,8 @@ class AgenticController:
             if rewritten and time.perf_counter() >= deadline:
                 break
 
+            iter_start = time.perf_counter()
+
             chunks = await self._retriever.retrieve(tenant_id, query, dense_emb, collection_id)
             context = "\n".join(c.text for c in chunks)
 
@@ -224,6 +227,7 @@ class AgenticController:
                     faithfulness=score.faithfulness,
                     answer_relevance=score.answer_relevance,
                     passed=passed,
+                    latency_ms=round((time.perf_counter() - iter_start) * 1000, 2),
                 )
             )
 

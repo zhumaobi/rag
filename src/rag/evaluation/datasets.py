@@ -33,6 +33,7 @@ def load_golden_samples(path: str) -> list[GoldenSample]:
             intent=r["intent"],
             reference_answer=r["reference_answer"],
             ground_truth_doc_ids=r.get("ground_truth_doc_ids", []),
+            key_points=r.get("key_points", []),
         )
         for r in _read_jsonl(path)
     ]

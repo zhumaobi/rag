@@ -35,3 +35,14 @@ class Embedder:
             chunk.embedding = vec
         log.info("chunks_embedded", count=len(chunks))
         return chunks
+
+
+_embedder_instance: Embedder | None = None
+
+
+def get_embedder() -> Embedder:
+    """Return a module-level singleton Embedder (lazy-initialized)."""
+    global _embedder_instance
+    if _embedder_instance is None:
+        _embedder_instance = Embedder()
+    return _embedder_instance

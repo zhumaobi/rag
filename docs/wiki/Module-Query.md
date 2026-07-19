@@ -47,11 +47,43 @@ Deterministic, dependency-free doubles for laptop runs:
 - `_FakeDense`, `_FakeSparse`, `_FakeReranker`, `_FakeNeo4j` — canned chunks/paths; `fake_retriever_kwargs()` returns them for `RetrievalRouter`.
 - `FakeVLLM` — simulated async generation. `FakeCache` — force-miss.
 
+## Agentic self-correction loop — `query/agentic.py`
+
+Opt-in for `(tenant, intent)` pairs configured via `RAG_AGENTIC_ENABLED_TENANTS` / `RAG_AGENTIC_ENABLED_INTENTS`. Non-whitelist requests run the default single-pass path with zero overhead.
+
+### `AgenticController` (agentic.py:154)
+
+Orchestrates the retrieve → generate → score → (HyDE rewrite → re-retrieve) loop:
+- **Budget:** independent wall-clock deadline (`deadline_s`, default 20s) + `max_iters` (default 2).
+- **Quality gate:** Faithfulness ≥ 0.90 AND Answer Relevance ≥ 0.85 (via `RagasEvaluator.score_one`). Context Utilization is excluded (offline-only).
+- **Best-so-far:** ranks candidates by `faithfulness + answer_relevance`; always returns the highest-scoring candidate.
+- **Low confidence:** if no candidate passes the gate, returns best-so-far with `low_confidence=True`.
+
+### `HyDERewriter` (agentic.py:78)
+
+Generates a hypothetical answer passage via the **7B/SMALL** pool, then embeds it to produce a dense-arm override vector. The sparse/BM25 arm always uses the original query terms. Falls back to embedding the original query on generation failure.
+
+### `AgenticRetriever` (agentic.py:118)
+
+Dedicated hybrid retrieval path that calls `DenseRetriever` + `SparseRetriever` directly (via `asyncio.to_thread`), fuses with RRF, and reranks. Accepts an optional embedding override for the dense arm. Does **not** touch the shared `RetrievalRouter`.
+
+- `recall_k=20`, `final_k=5`.
+
+### `AgenticConfig` (agentic.py:25)
+
+Static env-derived configuration: `enabled_tenants`, `enabled_intents`, `deadline_s`, `max_iters`. Constructed via `AgenticConfig.from_settings(settings)`.
+
+### Types
+
+- `IterationRecord(iteration, rewritten, faithfulness, answer_relevance, passed, latency_ms)` — per-iteration provenance on `QueryTrace.agentic_scores`.
+- `AgenticResult(text, contexts, doc_ids, tier, degraded_level, ..., low_confidence, iterations, iteration_records)`.
+
 ## Files
 
 | File | Purpose |
-|------|---------|
+|------|---------|  
 | `query/service.py` | `QueryService` — online orchestration facade |
+| `query/agentic.py` | `AgenticController`, `HyDERewriter`, `AgenticRetriever` — self-correction loop |
 | `query/types.py` | `QueryTrace`, `Answer`, `intent_to_request_str()` |
 | `query/wiring.py` | `build_mock()` / `build_production()` assembly |
 | `query/fakes.py` | Deterministic fakes for infra-free runs |

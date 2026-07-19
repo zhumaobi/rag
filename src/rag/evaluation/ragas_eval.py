@@ -61,14 +61,14 @@ class RagasEvaluator:
         return self._backend
 
     def score_one(
-        self, query: str, answer: str, contexts: list[str], scorer=None
+        self, query: str, answer: str, contexts: list[str], scorer=None, reference_answer: str = ""
     ) -> GenerationScore:
         """Score a single answer. `scorer(query, answer, contexts) -> dict` can be injected
         (used in tests / when RAGAs is unavailable); otherwise the RAGAs backend is used."""
         if scorer is not None:
             raw = scorer(query, answer, contexts)
         else:
-            raw = self._score_with_ragas(query, answer, contexts)
+            raw = self._score_with_ragas(query, answer, contexts, reference_answer=reference_answer)
         score = GenerationScore(
             faithfulness=float(raw.get("faithfulness", 0.0)),
             answer_relevance=float(raw.get("answer_relevance", 0.0)),
@@ -80,12 +80,12 @@ class RagasEvaluator:
             log.warning("low_quality_answer", query=query[:50], issues=issues)
         return score
 
-    def _score_with_ragas(self, query: str, answer: str, contexts: list[str]) -> dict:
+    def _score_with_ragas(self, query: str, answer: str, contexts: list[str], reference_answer: str = "") -> dict:
         from datasets import Dataset
 
         backend = self._lazy_backend()
         ds = Dataset.from_dict(
-            {"question": [query], "answer": [answer], "contexts": [contexts], "ground_truth": [""]}
+            {"question": [query], "answer": [answer], "contexts": [contexts], "ground_truth": [reference_answer]}
         )
         result = backend["evaluate"](ds, metrics=backend["metrics"])
         df = result.to_pandas().iloc[0]
