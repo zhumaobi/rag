@@ -23,6 +23,9 @@ class QueryTrace:
     tier: PoolTier | None = None
     degraded_level: str = ""
     retrieval_degraded: bool = False
+    agentic: bool = False
+    agentic_iterations: int = 0
+    agentic_scores: list[dict] = field(default_factory=list)
 
     @contextmanager
     def hop(self, name: str):

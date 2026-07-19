@@ -65,6 +65,13 @@ class Settings(BaseSettings):
     # Shadow retention
     shadow_retention_hours: int = 24
 
+    # Agentic RAG loop (opt-in). Empty tenant/intent lists = disabled everywhere.
+    # Comma-separated; intents use the "Intent-1|2|3" string form.
+    agentic_enabled_tenants: str = ""
+    agentic_enabled_intents: str = ""
+    agentic_deadline_s: float = 20.0
+    agentic_max_iters: int = 2
+
 
 @lru_cache
 def get_settings() -> Settings:

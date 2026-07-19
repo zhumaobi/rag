@@ -1,9 +1,16 @@
 from __future__ import annotations
 
 from config import get_settings
+from evaluation.ragas_eval import RagasEvaluator
 from intent.service import IntentService
 from observability.metrics import start_metrics_server
 from observability.tracing import setup_tracing
+from query.agentic import (
+    AgenticConfig,
+    AgenticController,
+    AgenticRetriever,
+    HyDERewriter,
+)
 from query.fakes import (
     FakeCache,
     FakeClassifier,
@@ -19,6 +26,17 @@ from serving.model_pool import DEFAULT_POOL_CONFIGS, ModelPool
 from serving.prefix import default_system_prefix
 from serving.types import Instance, InstanceState, PoolTier
 from serving.vllm_client import VLLMClient
+
+
+def _mock_ragas_scorer(query: str, answer: str, contexts: list[str]) -> dict:
+    """Deterministic RAGAs stand-in for mock wiring (mirrors run_offline)."""
+    has_answer = bool(answer.strip())
+    has_context = bool(contexts)
+    return {
+        "faithfulness": 0.95 if (has_answer and has_context) else 0.0,
+        "answer_relevance": 0.92 if has_answer else 0.0,
+        "context_utilization": 0.75 if has_context else 0.0,
+    }
 
 
 def _build_pools(small_n: int = 2, large_n: int = 2) -> dict[PoolTier, ModelPool]:
@@ -54,6 +72,21 @@ def build_mock() -> QueryService:
 
     dispatcher = Dispatcher(pools=_build_pools(), client=FakeVLLM())
 
+    fakes = fake_retriever_kwargs()
+    agentic_retriever = AgenticRetriever(
+        dense=fakes["dense"], sparse=fakes["sparse"], reranker=fakes["reranker"]
+    )
+    agentic = AgenticController(
+        retriever=agentic_retriever,
+        dispatcher=dispatcher,
+        evaluator=RagasEvaluator(),
+        hyde=HyDERewriter(dispatcher, embedder),
+        embedder=embedder,
+        config=AgenticConfig.from_settings(get_settings()),
+        system_prefix=default_system_prefix(),
+        ragas_scorer=_mock_ragas_scorer,
+    )
+
     return QueryService(
         embedder=embedder,
         intent=intent,
@@ -61,6 +94,8 @@ def build_mock() -> QueryService:
         router=router,
         dispatcher=dispatcher,
         system_prefix=default_system_prefix(),
+        agentic=agentic,
+        agentic_config=AgenticConfig.from_settings(get_settings()),
     )
 
 
@@ -120,6 +155,22 @@ def build_production() -> QueryService:
 
     dispatcher = Dispatcher(pools=_pools_from_settings(), client=VLLMClient())
 
+    from retrieval.dense import DenseRetriever
+    from retrieval.rerank import Reranker
+    from retrieval.sparse import SparseRetriever
+
+    agentic = AgenticController(
+        retriever=AgenticRetriever(
+            dense=DenseRetriever(), sparse=SparseRetriever(), reranker=Reranker()
+        ),
+        dispatcher=dispatcher,
+        evaluator=RagasEvaluator(),  # real RAGAs backend (loaded lazily)
+        hyde=HyDERewriter(dispatcher, embedder),
+        embedder=embedder,
+        config=AgenticConfig.from_settings(settings),
+        system_prefix=default_system_prefix(),
+    )
+
     return QueryService(
         embedder=embedder,
         intent=intent,
@@ -127,4 +178,6 @@ def build_production() -> QueryService:
         router=router,
         dispatcher=dispatcher,
         system_prefix=default_system_prefix(),
+        agentic=agentic,
+        agentic_config=AgenticConfig.from_settings(settings),
     )

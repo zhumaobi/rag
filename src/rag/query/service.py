@@ -7,6 +7,7 @@ from cache.service import SemanticCache
 from intent.service import IntentService
 from observability.metrics import get_metrics
 from observability.tracing import get_tracer
+from query.agentic import AgenticConfig, AgenticController
 from query.types import Answer, QueryTrace, intent_to_request_str
 from raglog import bind_request_id, clear_request_id, get_logger, get_request_id
 from retrieval.router import RetrievalRouter
@@ -33,6 +34,8 @@ class QueryService:
         dispatcher: Dispatcher,
         system_prefix: str = "",
         max_tokens: int = 512,
+        agentic: AgenticController | None = None,
+        agentic_config: AgenticConfig | None = None,
     ) -> None:
         self._embedder = embedder
         self._intent = intent
@@ -41,6 +44,8 @@ class QueryService:
         self._dispatcher = dispatcher
         self._system_prefix = system_prefix
         self._max_tokens = max_tokens
+        self._agentic = agentic
+        self._agentic_config = agentic_config or AgenticConfig()
 
     async def query(self, tenant_id: str, text: str, bypass_cache: bool = False) -> Answer:
         request_id = bind_request_id()
@@ -71,6 +76,61 @@ class QueryService:
                     return Answer(
                         text=hit.answer, intent=ir, cached=True,
                         meta={"cache_level": hit.level}, trace=trace,
+                    )
+
+            # 3b. Agentic self-correction loop (opt-in per tenant+intent). On any error
+            #     (e.g. RAGAs unavailable) fall through to the single-pass linear path.
+            if self._agentic is not None and self._agentic_config.is_enabled(tenant_id, intent_str):
+                collection_id = next(
+                    (e.collection_id for e in ir.entities if e.collection_id), None
+                )
+                try:
+                    with tracer.span("agentic", request_id=request_id, intent=intent_str), trace.hop("agentic"):
+                        ar = await self._agentic.run(
+                            tenant_id, text, intent_str, embedding, collection_id
+                        )
+                except Exception as exc:  # noqa: BLE001 - degrade to single pass
+                    log.warning("agentic_fallback_single_pass", tenant_id=tenant_id, error=str(exc))
+                else:
+                    trace.agentic = True
+                    trace.agentic_iterations = ar.iterations
+                    trace.agentic_scores = [
+                        {
+                            "iteration": r.iteration,
+                            "rewritten": r.rewritten,
+                            "faithfulness": round(r.faithfulness, 4),
+                            "answer_relevance": round(r.answer_relevance, 4),
+                            "passed": r.passed,
+                        }
+                        for r in ar.iteration_records
+                    ]
+                    trace.retrieved_doc_ids = ar.doc_ids
+                    trace.contexts = ar.contexts
+                    trace.retrieval_degraded = ar.retrieval_degraded
+                    trace.tier = ar.tier
+                    trace.degraded_level = ar.degraded_level
+                    trace.prompt = ar.prompt
+                    with tracer.span("cache_store", request_id=request_id):
+                        asyncio.create_task(
+                            self._cache.store_async(tenant_id, text, ar.text, embedding, ar.doc_ids)
+                        )
+                    metrics.observe_request(intent_str, time.perf_counter() - started, "ok")
+                    metrics.observe_degradation(ar.degraded_level)
+                    metrics.observe_stages(trace.hop_latency_ms)
+                    metrics.observe_agentic(intent_str, ar.iterations, ar.low_confidence)
+                    return Answer(
+                        text=ar.text,
+                        intent=ir,
+                        cached=False,
+                        degraded_level=ar.degraded_level,
+                        tier=ar.tier,
+                        meta={
+                            "agentic": True,
+                            "low_confidence": ar.low_confidence,
+                            "iterations": ar.iterations,
+                            **ar.gen_meta,
+                        },
+                        trace=trace,
                     )
 
             # 4. Retrieval routed by intent.

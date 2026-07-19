@@ -1,10 +1,4 @@
-# query-serving Specification
-
-## Purpose
-
-Provide the online query-serving facade that orchestrates the end-to-end query path (embed, intent recognition, cache lookup, retrieval, generation) behind a single injected `QueryService`, along with a mock wiring mode and CLI entry point for running the full path without infrastructure.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: End-to-end query orchestration
 
@@ -38,30 +32,6 @@ The system SHALL provide a `QueryService` facade exposing `async def query(tenan
 - **WHEN** a cache miss occurs and the `(tenant, intent)` pair is not enabled for the agentic loop
 - **THEN** the facade runs the existing single retrieve → generate path unchanged
 
-### Requirement: Cache-hit fast path
-
-The system SHALL return early with the cached answer when the cache reports a hit, skipping retrieval and generation. When the intent is marked time-sensitive, the cache lookup SHALL be bypassed.
-
-#### Scenario: Cache hit short-circuits
-
-- **WHEN** the cache lookup returns a `CacheHit`
-- **THEN** the service returns an `Answer` with `cached` set to `true` and the hit's answer text
-- **AND** retrieval and generation are not invoked
-
-#### Scenario: Time-sensitive query bypasses cache
-
-- **WHEN** the recognized intent has `time_sensitive` set to `true`
-- **THEN** the cache lookup is skipped and the query proceeds to retrieval and generation
-
-### Requirement: Intent-to-request mapping
-
-The system SHALL map the recognized `Intent` enum to the `"Intent-1" | "Intent-2" | "Intent-3"` string form expected by `GenRequest` when constructing the generation request.
-
-#### Scenario: Intent enum mapped for dispatcher
-
-- **WHEN** a `GenRequest` is constructed from an `IntentResult`
-- **THEN** the request's `intent` field holds the corresponding `"Intent-N"` string
-
 ### Requirement: Answer provenance
 
 The system SHALL return an `Answer` result type that carries the answer text plus provenance: the recognized intent, whether the result came from cache, the degradation level, and the serving tier used. The `Answer` SHALL additionally carry a `QueryTrace` exposing the correlation `request_id`, per-hop latency, the retrieved document ids, the retrieved context strings, the cache level (when hit), the serving tier, and the degradation flags. When the agentic loop ran, the `Answer` SHALL additionally expose a `low_confidence` flag in its meta, and the `QueryTrace` SHALL record the agentic iteration count and the per-iteration quality scores. Existing provenance fields SHALL be preserved.
@@ -82,32 +52,3 @@ The system SHALL return an `Answer` result type that carries the answer text plu
 - **WHEN** an `Answer` is returned from an agentic-loop run
 - **THEN** the `Answer` meta exposes a `low_confidence` flag
 - **AND** the `QueryTrace` records the agentic iteration count and per-iteration quality scores
-
-### Requirement: Fire-and-forget cache store on miss
-
-The system SHALL asynchronously store the generated answer into the cache on a miss without blocking the response to the caller.
-
-#### Scenario: Store scheduled after generation
-
-- **WHEN** an answer is generated on a cache miss
-- **THEN** a cache store operation is scheduled with the query, answer, embedding, and retrieved document ids
-- **AND** the service returns without awaiting the store to complete
-
-### Requirement: Mock wiring mode
-
-The system SHALL provide a `build_mock()` assembly that wires the facade with fakes at every infrastructure and GPU seam, so the full query path runs on a laptop with no databases and no GPU. The mock assembly SHALL exercise the real intent classification (rules path), the real retrieval routing branch selection, and the real dispatcher routing and degradation logic, while faking only embedding, vector/graph stores, cache backend, and LLM text generation.
-
-#### Scenario: Mock run completes without infrastructure
-
-- **WHEN** `build_mock()` assembles a `QueryService` and a query is executed
-- **THEN** the query completes end-to-end and returns an `Answer` without connecting to Milvus, Elasticsearch, Neo4j, Redis, PostgreSQL, or any GPU/LLM endpoint
-
-### Requirement: CLI entry point
-
-The system SHALL provide a `python -m query "<question>" --tenant <id>` entry point that runs a single query in mock mode and prints the resulting answer. The entry point SHALL run under the flat root-relative import convention with `src/rag` on `PYTHONPATH`.
-
-#### Scenario: CLI prints an answer
-
-- **WHEN** `python -m query "<question>" --tenant <id>` is invoked
-- **THEN** the process runs the full query path in mock mode and prints the answer text to standard output
-- **AND** exits with status code 0

@@ -64,6 +64,14 @@ class Metrics:
                 "rag_stage_latency_seconds", "Per-stage latency", ["stage"],
                 buckets=_LATENCY_BUCKETS, registry=self.registry,
             )
+            self.agentic_iterations = Histogram(
+                "rag_agentic_iterations", "Agentic loop iterations per request", ["intent"],
+                buckets=(1, 2, 3, 4, 5), registry=self.registry,
+            )
+            self.agentic_low_confidence_total = Counter(
+                "rag_agentic_low_confidence_total", "Agentic answers returned low-confidence",
+                ["intent"], registry=self.registry,
+            )
         else:
             self.registry = None
             noop = _NoopMetric()
@@ -74,6 +82,8 @@ class Metrics:
             self.request_latency = noop
             self.degradations_total = noop
             self.stage_latency = noop
+            self.agentic_iterations = noop
+            self.agentic_low_confidence_total = noop
             log.warning("prometheus_unavailable_noop_metrics")
 
     def observe_request(self, intent: str, latency_s: float, outcome: str = "ok") -> None:
@@ -88,6 +98,12 @@ class Metrics:
         """Record per-stage latencies (ms map from QueryTrace.hop_latency_ms)."""
         for stage, ms in hop_latency_ms.items():
             self.stage_latency.labels(stage=stage).observe(ms / 1000.0)
+
+    def observe_agentic(self, intent: str, iterations: int, low_confidence: bool) -> None:
+        """Record agentic loop iteration count and low-confidence outcomes."""
+        self.agentic_iterations.labels(intent=intent).observe(iterations)
+        if low_confidence:
+            self.agentic_low_confidence_total.labels(intent=intent).inc()
 
 
 _GLOBAL: Metrics | None = None
